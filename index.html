@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+<style>
+#canvas{
+	position: absolute;
+	top:0;
+	left:0;
+
+}	
+body{
+	margin: 0;
+	padding: 0;
+	background-color: #222;
+}	
+</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>	
+</body>
+<script>
+var canvas = document.getElementById("canvas"),
+	ctx    = canvas.getContext('2d'),
+	height = canvas.height = window.innerHeight,
+	width  = canvas.width  = window.innerWidth;
+	var direction;
+	var step = 15;
+	var x;
+	var y;
+	var balls = [];
+
+	var opts = {
+	particleColor: "rgb(200,200,200)",
+	lineColor: "rgba(200,200,200,0)",
+	particleAmount: 40,
+ 	defaultSpeed: 3,
+ 	variantSpeed: 3,
+ 	defaultRadius: 2,
+ 	variantRadius: 2,
+ 	linkRadius: 200
+	};
+
+	function addBalls(x,y,direction){
+		this.x = x;
+		this.y = y;
+		this.direction = direction;
+		this.speed = opts.defaultSpeed + Math.random() * opts.variantSpeed;
+		this.directionAngle = Math.floor(Math.random() * 360);
+		this.vectorX = Math.cos(this.directionAngle) * this.speed;
+		this.vectorY = Math.sin(this.directionAngle) * this.speed;
+		this.radius = opts.defaultRadius + Math.random() * opts. variantRadius;
+	}
+
+	window.onresize = function(){
+		canvas.width  = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+
+	function addBall(){
+		var ball = new addBalls(Math.random() * width,Math.random() * height,Math.floor(Math.random()*8));
+
+		balls.push(ball);
+	}
+
+	for(var i = 0; i < 50; i++){
+		addBall();
+	}
+	console.log(balls);
+	function renderBalls(){
+		ctx.clearRect(0,0,width,height);
+		for(var i = 0; i < balls.length; i++){
+			var ball = balls[i];
+			
+			if(ball.x <= 0 || ball.x >= width){
+				ball.vectorX *= -1;
+			}
+			if(ball.y <= 0 || ball.y >= height){
+				ball.vectorY *= -1;
+			}
+
+			ctx.beginPath();
+			ctx.moveTo(ball.x,ball.y);
+			ctx.arc(ball.x = ball.x + ball.vectorX, ball.y = ball.y + ball.vectorY, ball.radius, 0, Math.PI * 2);
+			ctx.strokeStyle = opts.particleColor;
+			ctx.fillStyle = opts.particleColor;
+			ctx.fill();
+			ctx.stroke();
+		}
+		setTimeout(renderBalls,40);
+		setTimeout(LineInDistance,40);
+	}
+renderBalls();
+
+
+function distanceToCircle(x1, y1, x2, y2){
+
+	return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+}
+function LineInDistance(){
+	for(var i = 0; i <balls.length; i++){
+		var ball = balls[i];
+			for(var j = 0; j < balls.length; j++){
+				var findBall = balls[j];
+				var distance = Math.sqrt(Math.pow(ball.x - findBall.x, 2) + Math.pow(ball.y - findBall.y, 2));
+				ctx.beginPath();
+					ctx.lineWidth = .5;
+					ctx.strokeStyle = opts.lineColor;
+					if (distance <= 400){
+					ctx.strokeStyle = "rgba(200,200,200,0.05)";
+				}
+					if (distance <= 380){
+					ctx.strokeStyle = "rgba(200,200,200,0.10)";
+				}
+					if (distance <= 350){
+					ctx.strokeStyle = "rgba(200,200,200,0.15)";
+				}
+					if (distance <= 320){
+					ctx.strokeStyle = "rgba(200,200,200,0.20)";
+				}
+					if (distance <= 290){
+					ctx.strokeStyle = "rgba(200,200,200,0.25)";
+				}
+					if (distance <= 250){
+					ctx.strokeStyle = "rgba(200,200,200,0.30)";
+				}
+					if (distance <= 220){
+					ctx.strokeStyle = "rgba(200,200,200,0.35)";
+				}
+					ctx.moveTo(ball.x , ball.y);
+					ctx.lineTo(findBall.x , findBall.y);
+					ctx.stroke();
+				
+		}
+	}
+}
+
+
+
+
+</script>
